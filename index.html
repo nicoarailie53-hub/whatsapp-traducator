@@ -132,40 +132,54 @@
 
   function speakText(text, langCode) {
     if (!text) return;
-    if (!("speechSynthesis" in window)) {
-      statusEl.textContent = "Browserul nu are sinteză vocală.";
-      return;
+    const shortLang = langCode === "fr" ? "fr" : langCode === "en" ? "en" : "ro";
+    const target = shortLang === "fr" ? "fr-FR" : shortLang === "en" ? "en-US" : "ro-RO";
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const voices = window.speechSynthesis.getVoices();
+      const roVoices = voices.filter(v => v.lang.toLowerCase().startsWith(shortLang));
+      const fem = roVoices.find(v => !/andrei|paul|henri|claude|remy|alain|male/i.test(v.name)) || roVoices[0];
+      if (fem) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.voice = fem;
+        u.lang = fem.lang;
+        statusEl.textContent = "🔊 Voce locală: " + fem.name;
+        window.speechSynthesis.speak(u);
+        return;
+      }
     }
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.resume();
 
-    const target = langCode === "fr" ? "fr-FR" : langCode === "en" ? "en-US" : "ro-RO";
-    const shortLang = target.slice(0, 2);
-    const voices = window.speechSynthesis.getVoices();
-    const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(shortLang));
-
-    const femVoice = langVoices.find(v =>
-      /ioana|alina|google|denise|julie|hortense|eloise|brigitte|female|natural/i.test(v.name) &&
-      !/andrei|paul|henri|claude|remy|alain|male/i.test(v.name)
-    ) || langVoices.find(v => !/andrei|paul|henri|claude|remy|alain|male/i.test(v.name)) || langVoices;
-
-    const parts = text.match(/[^.!?]+[.!?]*/g) || [text];
-    parts.forEach((part, i) => {
-      const chunk = part.trim();
-      if (!chunk) return;
-      const u = new SpeechSynthesisUtterance(chunk);
-      if (femVoice) {
-        u.voice = femVoice;
-        u.lang = femVoice.lang;
-      } else {
-        u.lang = target;
+    statusEl.textContent = "🔊 Se încarcă vocea online (" + shortLang.toUpperCase() + ")...";
+    const chunks = (text.match(/[^.!?]+[.!?]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    let i = 0;
+    function playOnline() {
+      if (i >= chunks.length) {
+        statusEl.textContent = "🔊 Redare finalizată (" + shortLang.toUpperCase() + ").";
+        return;
       }
-      u.rate = 0.98;
-      if (i === 0) {
-        statusEl.textContent = "Voce: " + (femVoice ? femVoice.name : target + " (" + voices.length + " voci)");
-      }
-      window.speechSynthesis.speak(u);
-    });
+      const part = chunks[i++].slice(0, 180);
+      const rawUrl = "https://" + "translate.google." + "com/translate_tts?ie=UTF-8&client=tw-ob&tl=" + shortLang + "&q=" + encodeURIComponent(part);
+      const proxyUrl = "https://" + "api.allorigins." + "win/raw?url=" + encodeURIComponent(rawUrl);
+      const audio = new Audio(proxyUrl);
+      audio.onended = playOnline;
+      audio.onerror = () => {
+        if ("speechSynthesis" in window) {
+          const u = new SpeechSynthesisUtterance(part);
+          u.lang = target;
+          statusEl.textContent = "🔊 Voce sistem (" + target + ")";
+          window.speechSynthesis.speak(u);
+        }
+      };
+      audio.play().catch(() => {
+        if ("speechSynthesis" in window) {
+          const u = new SpeechSynthesisUtterance(part);
+          u.lang = target;
+          window.speechSynthesis.speak(u);
+        }
+      });
+    }
+    playOnline();
   }
 
   document.getElementById("btnTranslate").addEventListener("click", translateText);
