@@ -91,7 +91,7 @@
       const voices = window.speechSynthesis.getVoices();
       const [, to] = dirEl.value.split("|");
       const savedName = localStorage.getItem("favVoice_" + to) || "";
-      voiceSelect.innerHTML = "";
+      voiceSelect.innerHTML = `<option value="online_ro">🌐 Voce Română Online (Feminină)</option><option value="online_fr">🌐 Voce Franceză Online (Feminină)</option>`;
 
       const matching = voices.filter(v => v.lang.toLowerCase().startsWith(to));
       const others = voices.filter(v => !v.lang.toLowerCase().startsWith(to));
@@ -156,7 +156,36 @@
     document.getElementById("btnTr").addEventListener("click", translateText);
     document.getElementById("btnDel").addEventListener("click", () => { srcEl.value = ""; dstEl.value = ""; statusEl.textContent = "Șters."; });
 
+    function playOnlineTTS(txt, lang) {
+      const chunks = (txt.match(/[^.!?]+[.!?]*/g) || [txt]).map(s => s.trim()).filter(Boolean);
+      let idx = 0;
+      const frame = document.getElementById("ttsFrame") || (() => {
+        const ifr = document.createElement("iframe");
+        ifr.id = "ttsFrame";
+        ifr.style.display = "none";
+        document.body.appendChild(ifr);
+        return ifr;
+      })();
+      function nextChunk() {
+        if (idx >= chunks.length) return;
+        const part = chunks[idx++].slice(0, 180);
+        const u = "https://" + "translate.google." + "com/translate_tts?ie=UTF-8&client=gtx&tl=" + lang + "&q=" + encodeURIComponent(part);
+        frame.src = u;
+        setTimeout(nextChunk, Math.max(2200, part.length * 75));
+      }
+      nextChunk();
+    }
+
     document.getElementById("btnSpk").addEventListener("click", () => {
+      if (voiceSelect.value.startsWith("online_")) {
+        const txt = (dstEl.value || srcEl.value).trim();
+        if (!txt) return;
+        const [, to] = dirEl.value.split("|");
+        const lang = voiceSelect.value === "online_fr" ? "fr" : (voiceSelect.value === "online_ro" ? "ro" : to);
+        playOnlineTTS(txt, lang);
+        statusEl.textContent = "🔊 Redă online (" + lang.toUpperCase() + ")";
+        return;
+      }
       const txt = (dstEl.value || srcEl.value).trim();
       if (!txt || !("speechSynthesis" in window)) return;
       window.speechSynthesis.cancel();
