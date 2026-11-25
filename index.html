@@ -5,230 +5,204 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WhatsApp Internațional & Traducător RO ↔ FR</title>
   <style>
-    :root { --bg:#0f172a; --card:#1e293b; --text:#f8fafc; --muted:#94a3b8; --green:#25d366; --blue:#38bdf8; --orange:#f97316; --border:#334155; }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); padding:14px; max-width:720px; margin:0 auto; }
-    header { background:#020617; border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-    h1 { font-size:1.15rem; }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:14px; }
-    .row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
-    select, input, textarea { width:100%; background:#020617; border:1px solid var(--border); color:var(--text); padding:11px; border-radius:10px; font-size:1rem; }
-    textarea { min-height:92px; resize:vertical; }
-    .btn { border:none; border-radius:10px; padding:12px 15px; font-size:0.95rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; flex:1; min-width:130px; }
-    .btn-green { background:var(--green); color:#052e16; }
-    .btn-orange { background:var(--orange); color:#fff; }
-    .btn-blue { background:var(--blue); color:#082f49; }
-    .btn-dark { background:#273549; color:var(--text); border:1px solid var(--border); }
-    .phrase-btn { width:100%; text-align:left; background:#020617; border:1px solid var(--border); color:var(--text); padding:10px 12px; border-radius:10px; margin-bottom:8px; cursor:pointer; font-size:0.92rem; }
-    .phrase-btn span { display:block; color:var(--blue); font-size:0.84rem; margin-top:2px; }
-    .status { font-size:0.84rem; color:var(--muted); margin-top:6px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: #0f172a; color: #f8fafc; padding: 16px; max-width: 760px; margin: 0 auto; }
+    .top { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 14px 18px; border-radius: 14px; margin-bottom: 16px; border: 1px solid #334155; }
+    .top h1 { font-size: 1.15rem; color: #25D366; }
+    .top a { color: #fbbf24; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+    .card { background: #1e293b; padding: 16px; border-radius: 14px; border: 1px solid #334155; margin-bottom: 16px; }
+    select, textarea, input { width: 100%; background: #0f172a; color: #f8fafc; border: 1px solid #475569; border-radius: 10px; padding: 12px; font-size: 1rem; margin-bottom: 12px; }
+    textarea { min-height: 110px; resize: vertical; line-height: 1.45; }
+    .row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    button { flex: 1; padding: 13px 16px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; color: #fff; min-width: 120px; }
+    .btn-mic { background: #f97316; }
+    .btn-tr { background: #0ea5e9; }
+    .btn-del { background: #475569; flex: 0.5; min-width: 80px; }
+    .btn-spk { background: #334155; border: 1px solid #475569; }
+    .btn-cpy { background: #334155; border: 1px solid #475569; }
+    .btn-wa { background: #25D366; color: #052e16; font-size: 1.08rem; }
+    .status { font-size: 0.9rem; color: #94a3b8; margin-top: 6px; }
+    label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 5px; }
   </style>
 </head>
 <body>
-  <header>
+  <div class="top">
     <div>
       <h1>🌍 WhatsApp Internațional & Traducător</h1>
-      <div style="font-size:0.82rem;color:var(--muted);">Traducere vocală & scrisă RO ↔ FR + mesaje rapide</div>
+      <div style="font-size:0.85rem;color:#94a3b8;">Traducere vocală & scrisă RO ↔ FR</div>
     </div>
-    <a href="https://github.io" style="color:var(--orange);text-decoration:none;font-weight:700;">← Hub</a>
-  </header>
-
-  <div class="card">
-    <div class="row">
-      <select id="dir">
-        <option value="ro|fr">🇷🇴 Română ➔ 🇫🇷 Franceză</option>
-        <option value="fr|ro">🇫🇷 Franceză ➔ 🇷🇴 Română</option>
-        <option value="ro|en">🇷🇴 Română ➔ 🇬🇧 Engleză</option>
-        <option value="en|ro">🇬🇧 Engleză ➔ 🇷🇴 Română</option>
-      </select>
-    </div>
-
-    <textarea id="srcText" placeholder="Scrie sau apasă pe Microfon și vorbește..."></textarea>
-
-    <div class="row" style="margin-top:10px;">
-      <button id="btnMic" class="btn btn-orange">🎙️ Vorbește</button>
-      <button id="btnTranslate" class="btn btn-blue">🔄 Tradu acum</button>
-      <button id="btnClear" class="btn btn-dark" style="min-width:80px;flex:0;">🗑️ Șterge</button>
-    </div>
-
-    <textarea id="dstText" placeholder="Traducerea apare aici..." style="margin-top:6px;border-color:var(--blue);"></textarea>
-
-    <div class="row" style="margin-top:10px;">
-      <button id="btnSpeak" class="btn btn-dark">🔊 Ascultă traducerea</button>
-      <button id="btnCopy" class="btn btn-dark">📋 Copiază</button>
-    </div>
-    <div id="status" class="status">Pregătit.</div>
+    <a href="https://github.io">← Hub</a>
   </div>
 
   <div class="card">
-    <strong style="display:block;margin-bottom:8px;">📲 Trimite direct pe WhatsApp (cu orice prefix internațional)</strong>
+    <label for="dir">Direcția de traducere:</label>
+    <select id="dir">
+      <option value="fr|ro">🇫🇷 Franceză ➔ 🇷🇴 Română</option>
+      <option value="ro|fr">🇷🇴 Română ➔ 🇫🇷 Franceză</option>
+    </select>
+
+    <textarea id="src" placeholder="Scrie sau dictează mesajul aici..."></textarea>
+
     <div class="row">
-      <select id="prefix" style="flex:1;min-width:130px;">
+      <button class="btn-mic" id="btnMic">🎙️ Vorbește</button>
+      <button class="btn-tr" id="btnTr">🔄 Tradu acum</button>
+      <button class="btn-del" id="btnDel">🗑️ Șterge</button>
+    </div>
+
+    <textarea id="dst" placeholder="Traducerea apare aici..."></textarea>
+
+    <label for="voiceSelect">Vocea pentru citire (alege vocea feminină preferată):</label>
+    <select id="voiceSelect"></select>
+
+    <div class="row">
+      <button class="btn-spk" id="btnSpk">🔊 Ascultă traducerea</button>
+      <button class="btn-cpy" id="btnCpy">📋 Copiază</button>
+    </div>
+    <div class="status" id="status">Pregătit.</div>
+  </div>
+
+  <div class="card">
+    <label>📲 Trimite direct pe WhatsApp (număr internațional):</label>
+    <div class="row">
+      <select id="prefix" style="flex:0.45;">
         <option value="33">🇫🇷 Franța (+33)</option>
         <option value="40">🇷🇴 România (+40)</option>
+        <option value="32">🇧🇪 Belgia (+32)</option>
+        <option value="41">🇨🇭 Elveția (+41)</option>
+        <option value="49">🇩🇪 Germania (+49)</option>
         <option value="39">🇮🇹 Italia (+39)</option>
         <option value="34">🇪🇸 Spania (+34)</option>
-        <option value="49">🇩🇪 Germania (+49)</option>
         <option value="44">🇬🇧 UK (+44)</option>
       </select>
-      <input id="phone" type="tel" placeholder="Număr (ex: 06 12 34 56 78)" style="flex:2;min-width:180px;" />
+      <input id="phone" type="tel" placeholder="Număr (ex: 06 12 34 56 78)" style="flex:0.55;" />
     </div>
-    <button id="btnWa" class="btn btn-green" style="width:100%;">💬 Deschide WhatsApp cu mesajul tradus</button>
+    <button class="btn-wa" id="btnWa">💬 Deschide WhatsApp și trimite mesajul</button>
   </div>
 
-  <div class="card">
-    <strong style="display:block;margin-bottom:8px;">⚡ Fraze rapide (apasă pentru a copia & asculta în franceză)</strong>
-    <div id="phrases"></div>
-  </div>
+  <script>
+    const srcEl = document.getElementById("src");
+    const dstEl = document.getElementById("dst");
+    const dirEl = document.getElementById("dir");
+    const statusEl = document.getElementById("status");
+    const voiceSelect = document.getElementById("voiceSelect");
 
-<script>
-  const PHRASES = [
-    { ro: "Bună ziua, sunt agentul de securitate de la postul de pază.", fr: "Bonjour, je suis l'agent de sécurité du poste de garde." },
-    { ro: "Vă rog să prezentați un act de identitate.", fr: "Veuillez présenter une pièce d'identité, s'il vous plaît." },
-    { ro: "Accesul este interzis persoanelor neautorizate.", fr: "L'accès est interdit aux personnes non autorisées." },
-    { ro: "Poarta este închisă la această oră.", fr: "Le portail est fermé à cette heure-ci." },
-    { ro: "Unde se află intrarea pentru livrări?", fr: "Où se trouve l'entrée des livraisons ?" },
-    { ro: "Am nevoie de ajutor, vă rog să sunați responsabilul.", fr: "J'ai besoin d'aide, veuillez appeler le responsable." }
-  ];
+    function populateVoices() {
+      if (!("speechSynthesis" in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      const [, to] = dirEl.value.split("|");
+      const savedName = localStorage.getItem("favVoice_" + to) || "";
+      voiceSelect.innerHTML = "";
 
-  const srcEl = document.getElementById("srcText");
-  const dstEl = document.getElementById("dstText");
-  const statusEl = document.getElementById("status");
+      const matching = voices.filter(v => v.lang.toLowerCase().startsWith(to));
+      const others = voices.filter(v => !v.lang.toLowerCase().startsWith(to));
+      const ordered = [...matching, ...others];
 
-  async function translateText() {
-    const q = srcEl.value.trim();
-    if (!q) return;
-    const [from, to] = document.getElementById("dir").value.split("|");
-    statusEl.textContent = "Se traduce...";
-    let translated = "";
-    try {
-      const gUrl = "https://" + "translate.googleapis." + "com/translate_a/single?client=gtx&sl=" + from + "&tl=" + to + "&dt=t&q=" + encodeURIComponent(q);
-      const res = await fetch(gUrl);
-      const data = await res.json();
-      if (data && data[0]) translated = data[0].map(x => x[0]).join("");
-    } catch (e) {}
+      ordered.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v.name;
+        opt.textContent = v.name + " (" + v.lang + ")";
+        voiceSelect.appendChild(opt);
+      });
 
-    if (!translated) {
-      try {
-        const mUrl = "https://" + "api.mymemory." + "translated.net/get?q=" + encodeURIComponent(q) + "&langpair=" + from + "|" + to;
-        const res2 = await fetch(mUrl);
-        const data2 = await res2.json();
-        translated = data2?.responseData?.translatedText || "";
-      } catch (e2) {}
+      if (savedName && ordered.some(v => v.name === savedName)) {
+        voiceSelect.value = savedName;
+      } else {
+        const fem = matching.find(v => !/andrei|paul|henri|claude|remy|alain|male/i.test(v.name)) || matching[0];
+        if (fem) voiceSelect.value = fem.name;
+      }
     }
-
-    if (translated) {
-      dstEl.value = translated;
-      statusEl.textContent = "Tradus cu succes (" + from.toUpperCase() + " -> " + to.toUpperCase() + ").";
-    } else {
-      statusEl.textContent = "Eroare la traducere. Verifică internetul.";
-    }
-  }
-
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-  }
-
-  function speakText(text, langCode) {
-    if (!text) return;
-    const shortLang = langCode === "fr" ? "fr" : langCode === "en" ? "en" : "ro";
-    const target = shortLang === "fr" ? "fr-FR" : shortLang === "en" ? "en-US" : "ro-RO";
 
     if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const voices = window.speechSynthesis.getVoices();
-      const roVoices = voices.filter(v => v.lang.toLowerCase().startsWith(shortLang));
-      const fem = roVoices.find(v => !/andrei|paul|henri|claude|remy|alain|male/i.test(v.name)) || roVoices[0];
-      if (fem) {
-        const u = new SpeechSynthesisUtterance(text);
-        u.voice = fem;
-        u.lang = fem.lang;
-        statusEl.textContent = "🔊 Voce locală: " + fem.name;
-        window.speechSynthesis.speak(u);
-        return;
-      }
+      populateVoices();
+      window.speechSynthesis.onvoiceschanged = populateVoices;
     }
-
-    statusEl.textContent = "🔊 Se încarcă vocea online (" + shortLang.toUpperCase() + ")...";
-    const chunks = (text.match(/[^.!?]+[.!?]*/g) || [text]).map(s => s.trim()).filter(Boolean);
-    let i = 0;
-    function playOnline() {
-      if (i >= chunks.length) {
-        statusEl.textContent = "🔊 Redare finalizată (" + shortLang.toUpperCase() + ").";
-        return;
-      }
-      const part = chunks[i++].slice(0, 180);
-      const rawUrl = "https://" + "translate.google." + "com/translate_tts?ie=UTF-8&client=tw-ob&tl=" + shortLang + "&q=" + encodeURIComponent(part);
-      const proxyUrl = "https://" + "api.allorigins." + "win/raw?url=" + encodeURIComponent(rawUrl);
-      const audio = new Audio(proxyUrl);
-      audio.onended = playOnline;
-      audio.onerror = () => {
-        if ("speechSynthesis" in window) {
-          const u = new SpeechSynthesisUtterance(part);
-          u.lang = target;
-          statusEl.textContent = "🔊 Voce sistem (" + target + ")";
-          window.speechSynthesis.speak(u);
-        }
-      };
-      audio.play().catch(() => {
-        if ("speechSynthesis" in window) {
-          const u = new SpeechSynthesisUtterance(part);
-          u.lang = target;
-          window.speechSynthesis.speak(u);
-        }
-      });
-    }
-    playOnline();
-  }
-
-  document.getElementById("btnTranslate").addEventListener("click", translateText);
-  document.getElementById("btnClear").addEventListener("click", () => { srcEl.value = ""; dstEl.value = ""; });
-  document.getElementById("btnSpeak").addEventListener("click", () => {
-    const [, to] = document.getElementById("dir").value.split("|");
-    speakText(dstEl.value || srcEl.value, to);
-  });
-  document.getElementById("btnCopy").addEventListener("click", () => {
-    const txt = dstEl.value || srcEl.value;
-    if (txt) { navigator.clipboard.writeText(txt); statusEl.textContent = "Copiat în memorie!"; }
-  });
-
-  document.getElementById("btnMic").addEventListener("click", () => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { statusEl.textContent = "Browserul nu suportă microfon."; return; }
-    const [from] = document.getElementById("dir").value.split("|");
-    const rec = new SR();
-    rec.lang = from === "fr" ? "fr-FR" : from === "en" ? "en-US" : "ro-RO";
-    statusEl.textContent = "🎙️ Vorbește acum...";
-    rec.onresult = (e) => {
-      srcEl.value = e.results[0][0].transcript;
-      translateText();
-    };
-    rec.onerror = () => { statusEl.textContent = "Nu s-a auzit nimic, încearcă din nou."; };
-    rec.start();
-  });
-
-  document.getElementById("btnWa").addEventListener("click", () => {
-    const prefix = document.getElementById("prefix").value;
-    let num = document.getElementById("phone").value.replace(/\D/g, "");
-    if (num.startsWith("0")) num = num.slice(1);
-    const msg = encodeURIComponent(dstEl.value || srcEl.value || "");
-    const url = num ? `https://wa.me{prefix}${num}?text=${msg}` : `https://wa.me{msg}`;
-    window.open(url, "_blank");
-  });
-
-  const phrasesBox = document.getElementById("phrases");
-  PHRASES.forEach((p) => {
-    const btn = document.createElement("button");
-    btn.className = "phrase-btn";
-    btn.innerHTML = `${p.ro}<span>🇫🇷 ${p.fr}</span>`;
-    btn.addEventListener("click", () => {
-      srcEl.value = p.ro;
-      dstEl.value = p.fr;
-      speakText(p.fr, "fr");
+    dirEl.addEventListener("change", populateVoices);
+    voiceSelect.addEventListener("change", () => {
+      const [, to] = dirEl.value.split("|");
+      localStorage.setItem("favVoice_" + to, voiceSelect.value);
     });
-    phrasesBox.appendChild(btn);
-  });
-</script>
+
+    async function translateText() {
+      const q = srcEl.value.trim();
+      if (!q) return;
+      const [from, to] = dirEl.value.split("|");
+      statusEl.textContent = "Se traduce (" + from.toUpperCase() + " ➔ " + to.toUpperCase() + ")...";
+      let translated = "";
+
+      try {
+        const gUrl = "https://" + "translate.googleapis." + "com/translate_a/single?client=gtx&sl=" + from + "&tl=" + to + "&dt=t&q=" + encodeURIComponent(q);
+        const res = await fetch(gUrl);
+        const data = await res.json();
+        if (data && data[0]) translated = data[0].map(x => x[0]).join("");
+      } catch (e) {}
+
+      if (!translated) {
+        try {
+          const mUrl = "https://" + "api.mymemory." + "translated.net/get?q=" + encodeURIComponent(q) + "&langpair=" + from + "|" + to;
+          const res2 = await fetch(mUrl);
+          const data2 = await res2.json();
+          translated = data2?.responseData?.translatedText || "";
+        } catch (e2) {}
+      }
+
+      if (translated) {
+        dstEl.value = translated;
+        statusEl.textContent = "✅ Tradus (" + from.toUpperCase() + " ➔ " + to.toUpperCase() + ").";
+      } else {
+        statusEl.textContent = "❌ Eroare internet la traducere.";
+      }
+    }
+
+    document.getElementById("btnTr").addEventListener("click", translateText);
+    document.getElementById("btnDel").addEventListener("click", () => { srcEl.value = ""; dstEl.value = ""; statusEl.textContent = "Șters."; });
+
+    document.getElementById("btnSpk").addEventListener("click", () => {
+      const txt = (dstEl.value || srcEl.value).trim();
+      if (!txt || !("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+      const voices = window.speechSynthesis.getVoices();
+      const chosen = voices.find(v => v.name === voiceSelect.value);
+      const [, to] = dirEl.value.split("|");
+
+      const parts = txt.match(/[^.!?]+[.!?]*/g) || [txt];
+      parts.forEach(p => {
+        const chunk = p.trim();
+        if (!chunk) return;
+        const u = new SpeechSynthesisUtterance(chunk);
+        if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+        else { u.lang = to === "fr" ? "fr-FR" : "ro-RO"; }
+        window.speechSynthesis.speak(u);
+      });
+      statusEl.textContent = "🔊 Citește cu: " + (chosen ? chosen.name : to.toUpperCase());
+    });
+
+    document.getElementById("btnCpy").addEventListener("click", () => {
+      const txt = dstEl.value || srcEl.value;
+      if (txt) { navigator.clipboard.writeText(txt); statusEl.textContent = "📋 Copiat!"; }
+    });
+
+    document.getElementById("btnMic").addEventListener("click", () => {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { statusEl.textContent = "Microfon nesuportat în acest browser."; return; }
+      const [from] = dirEl.value.split("|");
+      const rec = new SR();
+      rec.lang = from === "fr" ? "fr-FR" : "ro-RO";
+      statusEl.textContent = "🎙️ Vorbește acum (" + rec.lang + ")...";
+      rec.onresult = (e) => { srcEl.value = e.results[0][0].transcript; translateText(); };
+      rec.onerror = () => { statusEl.textContent = "Nu s-a auzit nimic, încearcă din nou."; };
+      rec.start();
+    });
+
+    document.getElementById("btnWa").addEventListener("click", () => {
+      const prefix = document.getElementById("prefix").value;
+      let num = document.getElementById("phone").value.replace(/\D/g, "");
+      if (num.startsWith("0")) num = num.slice(1);
+      if (!num) { statusEl.textContent = "Introdu un număr de telefon!"; return; }
+      const msg = encodeURIComponent((dstEl.value || srcEl.value || "").trim());
+      const waUrl = "https://" + "wa.me/" + prefix + num + (msg ? "?text=" + msg : "");
+      window.open(waUrl, "_blank");
+    });
+  </script>
 </body>
 </html>
