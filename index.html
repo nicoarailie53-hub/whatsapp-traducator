@@ -132,28 +132,38 @@
 
   function speakText(text, langCode) {
     if (!text) return;
+    if (!("speechSynthesis" in window)) {
+      statusEl.textContent = "Browserul nu are sinteză vocală.";
+      return;
+    }
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
+
     const target = langCode === "fr" ? "fr-FR" : langCode === "en" ? "en-US" : "ro-RO";
     const shortLang = target.slice(0, 2);
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const voices = window.speechSynthesis.getVoices();
-      const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(shortLang));
-      const goodVoice = langVoices.find(v => !/paul|henri|claude|george|david|mark|male|andrei|ion/i.test(v.name)) || langVoices[0];
-      if (goodVoice) {
-        const u = new SpeechSynthesisUtterance(text);
-        u.voice = goodVoice;
-        u.lang = goodVoice.lang;
-        statusEl.textContent = "🔊 Citește: " + goodVoice.name;
-        window.speechSynthesis.speak(u);
-        return;
+    const voices = window.speechSynthesis.getVoices();
+    const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(shortLang));
+
+    const femVoice = langVoices.find(v =>
+      /ioana|alina|google|denise|julie|hortense|eloise|brigitte|female|natural/i.test(v.name) &&
+      !/andrei|paul|henri|claude|remy|alain|male/i.test(v.name)
+    ) || langVoices.find(v => !/andrei|paul|henri|claude|remy|alain|male/i.test(v.name)) || langVoices;
+
+    const parts = text.match(/[^.!?]+[.!?]*/g) || [text];
+    parts.forEach((part, i) => {
+      const chunk = part.trim();
+      if (!chunk) return;
+      const u = new SpeechSynthesisUtterance(chunk);
+      if (femVoice) {
+        u.voice = femVoice;
+        u.lang = femVoice.lang;
+      } else {
+        u.lang = target;
       }
-    }
-    const ttsUrl = "https://" + "translate.google." + "com/translate_tts?ie=UTF-8&client=tw-ob&tl=" + shortLang + "&q=" + encodeURIComponent(text.slice(0, 200));
-    const audio = new Audio(ttsUrl);
-    statusEl.textContent = "🔊 Citește audio Google (" + shortLang.toUpperCase() + ")";
-    audio.play().catch(() => {
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = target;
+      u.rate = 0.98;
+      if (i === 0) {
+        statusEl.textContent = "Voce: " + (femVoice ? femVoice.name : target + " (" + voices.length + " voci)");
+      }
       window.speechSynthesis.speak(u);
     });
   }
