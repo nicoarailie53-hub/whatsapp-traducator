@@ -132,27 +132,37 @@
 
   function speakText(text, langCode) {
     if (!text) return;
-    const target = langCode === "fr" ? "fr-FR" : langCode === "en" ? "en-US" : "ro-RO";
-    const shortLang = target.slice(0, 2);
+    const shortLang = langCode === "fr" ? "fr" : langCode === "en" ? "en" : "ro";
     if ("speechSynthesis" in window) {
       window.speechSynthesis.cancel();
       const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(v => v.lang.toLowerCase().startsWith(shortLang));
-      if (voice) {
+      const femVoice = voices.find(v =>
+        (v.lang.toLowerCase().startsWith(shortLang + "-") || v.lang.toLowerCase() === shortLang) &&
+        (v.name.toLowerCase().includes("google") || v.name.toLowerCase().includes("ioana") || v.name.toLowerCase().includes("alina") || v.name.toLowerCase().includes("female"))
+      );
+      if (femVoice) {
         const u = new SpeechSynthesisUtterance(text);
-        u.voice = voice;
-        u.lang = target;
+        u.voice = femVoice;
+        u.lang = femVoice.lang;
         window.speechSynthesis.speak(u);
         return;
       }
     }
-    const ttsUrl = "https://" + "translate.google." + "com/translate_tts?ie=UTF-8&client=gtx&tl=" + shortLang + "&q=" + encodeURIComponent(text.slice(0, 200));
-    const audio = new Audio();
-    audio.referrerPolicy = "no-referrer";
-    audio.src = ttsUrl;
-    audio.play().catch(() => {
-      statusEl.textContent = "Apasă din nou pe Ascultă pentru redare audio.";
-    });
+    const parts = text.match(/[^.!?]+[.!?]*/g) || [text];
+    let idx = 0;
+    function playNext() {
+      if (idx >= parts.length) return;
+      const chunk = parts[idx++].trim();
+      if (!chunk) { playNext(); return; }
+      const ttsUrl = "https://" + "translate.google." + "com/translate_tts?ie=UTF-8&client=gtx&tl=" + shortLang + "&q=" + encodeURIComponent(chunk.slice(0, 180));
+      const audio = new Audio();
+      audio.referrerPolicy = "no-referrer";
+      audio.src = ttsUrl;
+      audio.onended = playNext;
+      audio.onerror = playNext;
+      audio.play().catch(() => {});
+    }
+    playNext();
   }
 
   document.getElementById("btnTranslate").addEventListener("click", translateText);
